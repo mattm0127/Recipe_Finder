@@ -1,0 +1,92 @@
+{% extends 'recipe_app/base.html' %} 
+
+{% block content %} 
+<div class="container mt-5">
+  <div class="row justify-content-center">
+
+    {% if recipe_filter == 'recents' %}
+    <h1 style="text-align: center;">Recent Recipes</h1>
+    {% elif recipe_filter == 'skipped' %}
+    <h1 style="text-align: center;">Skipped Recipes</h1>
+    {% endif %}
+    <div style="display: flex; justify-content: center;">
+      <a href="{% url 'home' %}" class='link-dark text-muted home-link'>Home</a>
+    </div>
+    <div class="col-md-12 col-lg-12">
+      <div class="row recipe-card-container">
+        <div class="pagination mt-3"> 
+            <div class="pagination-centered">
+
+              {% if page_obj.has_previous %}
+              <a href="?page=1" class="link-dark text-muted">&laquo; first</a> 
+              <a href="?page={{ page_obj.previous_page_number }}" class="link-dark text-muted">previous</a> 
+              {% endif %}
+              <span class="current"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} </span> 
+              {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}" class="link-dark text-muted">next</a> 
+              <a href="?page={{ page_obj.paginator.num_pages }}" class="link-dark text-muted">last &raquo;</a> 
+              {% endif %}
+
+            </div>
+          </div>
+
+        {% for recipe in page_obj %}
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-light shadow-sm recipe-card" style="width: 20rem;">
+            <a href="{% url 'load_recipe' recipe.api_id %}">
+              <img src="{{ recipe.image }}" class="card-img-top" alt="{{ recipe.name }}"> 
+            </a>
+            <div class="card-body recipe-card-body">
+              <h5 class="card-title">
+                <a href="{% url 'load_recipe' recipe.api_id %}" class="text-decoration-none link-dark">{{ recipe.name }}</a> 
+              </h5> 
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const recipeCards = document.querySelectorAll('.recipe-card');
+  recipeCards.forEach(card => {
+    card.addEventListener('mouseover', () => {
+      recipeCards.forEach(otherCard => {
+        if (otherCard !== card) {
+          otherCard.style.opacity = 0.5;
+        }
+      });
+    });
+    card.addEventListener('mouseout', () => {
+      recipeCards.forEach(otherCard => {
+        otherCard.style.opacity = 1;
+      });
+    });
+  });
+</script>
+
+<style>
+  .pagination-centered {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Ensure the pagination takes full width */
+  }
+  .pagination {
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+    align-items: center;   /* Center horizontally */
+  }
+  .pagination-centered a {
+    margin: 0 5px;
+  }
+  .home-link {
+    text-align: center;
+    font-size: .65cm;
+    display: block; 
+    margin: 0 auto;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'recipe_app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-light shadow-sm"> 
+        <div class="card-body">
+          <img src="{% static 'recipe_app/logo_icons/logo.svg' %}" width="150" height="150">
+          <h2 class="text-muted mb-4">Your Recipes Await!</h2>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              {{ form.as_p }} 
+            </div>
+            <button type="submit" class="btn btn-secondary">Login</button>
+          </form>
+        </div>
+        <p style="display: flex; justify-content: space-between;">
+          <a href="{% url 'password_reset' %}"><button class="btn">Forgot Password</button></a>
+          <a href="{% url 'signup' %}"><button class="btn">No Account? Register Here</button></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card-body {
+      display: flex;
+      flex-direction: column; /* Align items vertically */
+      justify-content: center; /* Center vertically */
+      align-items: center; /* Center horizontally */
+      min-height: 250px; /* Ensure the card body takes up some height */
+      text-align: center;
+  }
+</style>
+
+{% endblock %}

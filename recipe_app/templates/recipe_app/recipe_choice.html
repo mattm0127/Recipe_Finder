@@ -1,0 +1,56 @@
+{% extends 'recipe_app/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <h1 class="row justify-content-center text-muted"> {{ title }}</h1>
+    <div class="col-md-12 col-lg-10">
+      <div class="row recipe-card-container"> 
+        {% for recipe in object_list %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card border-light shadow-sm recipe-card" style="width: 22rem;">
+            {% for summary in summary_list %}
+              {% if summary.recipe_api_id == recipe.api_id %}
+            <a href="{% url 'load_recipe' recipe.api_id %}">
+              <img src="{{ recipe.image }}" class="card-img-top" alt="{{ recipe.name }}" 
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ summary.summary }}">
+            </a>
+              {% endif %}
+            {% endfor %}
+            <div class="card-body recipe-card-body">
+              <h5 class="card-title">
+                <a href="{% url 'load_recipe' recipe.api_id %}" class="text-decoration-none link-dark">{{ recipe.name }}</a>
+              </h5>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const recipeCards = document.querySelectorAll('.recipe-card');
+
+  recipeCards.forEach(card => {
+    card.addEventListener('mouseover', () => {
+      recipeCards.forEach(otherCard => {
+        if (otherCard !== card) {
+          otherCard.style.opacity = 0.5;
+        }
+      });
+    });
+
+    card.addEventListener('mouseout', () => {
+      recipeCards.forEach(otherCard => {
+        otherCard.style.opacity = 1;
+      });
+    });
+  });
+
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+
+{% endblock %}

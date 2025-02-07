@@ -1,0 +1,88 @@
+{% extends 'recipe_app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8"> 
+      <div class="card border-light shadow-sm">
+        <img src="{{ recipe_info.image }}" class="card-img-top" alt="{{ recipe_info.title }}" style="max-height: 250px; object-fit: cover;">
+        <div class="card-body">
+          <h1 class="card-title" style="text-align: center;">
+            {% if user_info.is_favorite == True %}
+              <a href="{% url 'favorite' user_info.api_id False %}">
+              <img src="{% static 'recipe_app/favorite_icons/star.png' %}" title="Remove from Favorites" width="60" height="60"></a>
+            {% else %}
+              <a href="{% url 'favorite' user_info.api_id True %}">
+              <img src="{% static 'recipe_app/favorite_icons/star-bw.png' %}" title="Add to Favorites" width="60" height="60"></a>
+            {% endif %}
+            {{ recipe_info.title }}
+          </h1>
+          <p class="text-muted mt-4" style="text-align: center;">
+              Food Allergens: 
+            {% if recipe_info.vegetarian %}
+              <img src="{% static 'recipe_app/diet_icons/vegetarian.png' %}" width="50" height="50">
+            {% else %}
+              <img src="{% static 'recipe_app/diet_icons/vegetarian-bw.png' %}" width="50" height="50" style="opacity: 0.2;">
+            {% endif %}
+            {% if recipe_info.vegan %}
+               <img src="{% static 'recipe_app/diet_icons/vegan.png' %}" width="50" height="50">
+            {% else %}
+               <img src="{% static 'recipe_app/diet_icons/vegan-bw.png' %}" width="50" height="50" style="opacity: 0.2;">
+            {% endif %}
+            {% if recipe_info.gluten_free %}
+               <img src="{% static 'recipe_app/diet_icons/gluten-free.png' %}" width="50" height="50">
+            {% else %}
+               <img src="{% static 'recipe_app/diet_icons/gluten-free-bw.png' %}" width="50" height="50" style="opacity: 0.2;">
+            {% endif %}
+            {% if recipe_info.dairy_free %}
+               <img src="{% static 'recipe_app/diet_icons/dairy-free.png' %}" width="50" height="50">
+            {% else %}
+               <img src="{% static 'recipe_app/diet_icons/dairy-free-bw.png' %}" width="50" height="50" style="opacity: 0.2;">
+            {% endif %}
+          </p>
+          <h5 class="text-muted mt-4" style="text-align: center;">{{ recipe_info.ready_in_minutes }} minutes Total</h5>
+          {% if recipe_info.preparation_min or recipe_info.cook_min %}
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item cooking-time" style="text-align: center;">
+              <h8 class="text-muted mt-4">{{ recipe_info.preparation_min }} minutes to prep</h8>
+            </li>
+            <li class="list-group-item cooking-time" style="text-align: center;">
+              <h8 class="text-muted mt-4">{{ recipe_info.cook_min }} minutes to cook</h8>
+            </li>
+          </ul>
+          {% endif %}
+          <h5 class="text-muted mt-4" style="text-align: center;">Serving Size: {{ recipe_info.servings }}</h5>
+          <h2 class="text-muted mt-4">Summary</h2>
+          <p class="text-muted mt-4">{{ recipe_info.summary|safe }}</p>
+          <h2 class="text-muted mt-4">Ingredients</h2>
+          <ul class="list-group list-group-flush"> 
+            {% for ingredient in ingredients %}
+              <li class="list-group-item">
+                <b>{{ ingredient.name.title }}</b>: {{ ingredient.info }}
+              </li>
+            {% endfor %}
+          </ul>
+
+          <h2 class="text-muted mt-4">Recipe</h2>
+          <ol class="list-group list-group-flush"> 
+            {% for step in procedure %}
+              <li class="list-group-item">{{ step.step_number }}: {{ step.step }}</li>
+            {% endfor %}
+          </ol>
+          <br>
+          <p style="text-align: center;"><a href="{{recipe_info.source_url}}">Recipe brought to you by {{ recipe_info.source_name }}</a></p>
+          <p style="text-align: center;"><a href="https://www.flaticon.com/authors/freepik/">Icons created by Freepik - Flaticon</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cooking-time {
+  border-bottom: none; 
+}
+</style>
+{% endblock %}

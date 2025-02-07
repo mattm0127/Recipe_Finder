@@ -1,0 +1,210 @@
+{% extends 'recipe_app/base.html' %} 
+
+{% block content %} 
+<div class="container"> 
+
+  <div class="row mb-4"> 
+    <div class="col-md-12"> 
+      <div class="card border-light hero-card">
+        <a href="{% url 'get_recipes' %}" class="text-decoration-none link-dark"> 
+          <div class="card-body text-center">
+            <h3 class="card-title">Find Your Next Meal</h3> 
+          </div>
+        </a>
+      </div>
+    </div> 
+  </div>
+
+<br>
+
+  <div class="row mt-4"> 
+    <div class="col-md-12"> 
+      {% if empty %} 
+      <p class="text-center">Recent Recipes will Appear Here</p> 
+      {% else %}
+      <div style="display: inline-block">
+        <h2>Your Recents</h2>
+      </div>
+      <div style="display: inline-block; margin-left: 1%;">
+        <a href="{% url 'recent_recipes' 'recents' %}" class="link-dark text-muted"><h4>See All</h4></a>
+      </div>
+      <div style="display: inline-block; margin-left: 1%;">
+        <a href="{% url 'recent_recipes' 'favorites' %}" class="link-dark text-muted"><h4>See Favorites</h4></a>
+      </div>
+      <div class="recipe-carousel"> 
+        <button class="carousel-control prev" onclick="scrollRecipes('recent', 'left')">&#10094;</button> 
+        <div class="carousel-inner"> 
+          <div class="row flex-nowrap overflow-hidden" id="recent-recipes"> 
+            {% for recipe in viewed_recipes %} 
+            <div class="col-md-4"> 
+              <div class="card border-light recipe-card"> 
+                <a href="{% url 'load_recipe' recipe.api_id %}"> 
+                  <img src="{{ recipe.image }}" class="card-img-top" alt="{{ recipe.name }}"> 
+                </a> 
+                <div class="card-body"> 
+                  <h5 class="card-title"> 
+                    <a href="{% url 'load_recipe' recipe.api_id %}" class="text-decoration-none link-dark">{{ recipe.name }}</a> 
+                  </h5> 
+                </div> 
+              </div> 
+            </div> 
+            {% endfor %} 
+          </div> 
+        </div> 
+        <button class="carousel-control next" onclick="scrollRecipes('recent', 'right')">&#10095;</button> 
+      </div> 
+    </div> 
+  </div> 
+
+  <div class="row mt-4"> 
+    <div class="col-md-12">
+      <div style="display: inline-block"> 
+        <h2 class="text-muted">Ones You've Skipped</h2>
+      </div>
+      <div style="display: inline-block; margin-left: 1%;">
+        <a href="{% url 'recent_recipes' 'skipped' %}" class="link-dark text-muted"><h4>See All</h4></a>
+      </div> 
+      <div class="recipe-carousel"> 
+        <button class="carousel-control prev" onclick="scrollRecipes('skipped', 'left')">&#10094;</button> 
+        <div class="carousel-inner"> 
+          <div class="row flex-nowrap overflow-hidden" id="skipped-recipes"> 
+            {% for recipe in skipped_recipes %} 
+            <div class="col-md-4"> 
+              <div class="card border-light recipe-card"> 
+                <a href="{% url 'load_recipe' recipe.api_id %}"> 
+                  <img src="{{ recipe.image }}" class="card-img-top" alt="{{ recipe.name }}"> 
+                </a> 
+                <div class="card-body"> 
+                  <h5 class="card-title"> 
+                    <a href="{% url 'load_recipe' recipe.api_id %}" class="text-decoration-none link-dark">{{ recipe.name }}</a> 
+                  </h5> 
+                </div> 
+              </div> 
+            </div> 
+            {% endfor %} 
+          </div> 
+        </div> 
+        <button class="carousel-control next" onclick="scrollRecipes('skipped', 'right')">&#10095;</button> 
+      </div> 
+    </div> 
+  </div> 
+</div> 
+{% endif %} 
+
+<script>
+  function scrollRecipes(id, direction) {
+   const container = document.getElementById(id + '-recipes');
+   const scrollAmount = 900; 
+   let start = container.scrollLeft;
+   let end;
+ 
+   if (direction === 'left') {
+     end = start - scrollAmount;
+   } else {
+     end = start + scrollAmount;
+   }
+ 
+   // Animate the scrolling
+   let startTime = null;
+   function animateScroll(timestamp) {
+     if (!startTime) startTime = timestamp;
+     const progress = Math.min((timestamp - startTime) / 350, 1); // Adjust 200 for speed
+     container.scrollLeft = start + (end - start) * progress;
+     if (progress < 1) {
+       requestAnimationFrame(animateScroll);
+     }
+   }
+   requestAnimationFrame(animateScroll);
+ 
+   // Check if we're at the beginning or end 
+   const prevButton = container.parentNode.querySelector('.prev');
+   const nextButton = container.parentNode.querySelector('.next');
+   
+   // Show/hide buttons based on scroll position 
+   prevButton.style.display = container.scrollLeft > 0 ? 'block' : 'none';
+   nextButton.style.display = container.scrollLeft + container.offsetWidth < container.scrollWidth ? 'block' : 'none';
+ }
+ </script>
+ 
+ <style>
+  .recipe-carousel {
+   position: relative;
+  }
+ 
+  .carousel-control {
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   background-color: rgba(0, 0, 0, 0.2); 
+   border: none;
+   color: white;
+   padding: 10px 15px;
+   font-size: 30px;
+   cursor: pointer;
+   z-index: 10; 
+  }
+ 
+  .carousel-inner {
+   position: relative; 
+   width: 100%;
+   overflow: hidden; 
+  }
+ 
+  .prev {
+   left: 0; 
+  }
+ 
+  .next {
+   right: 0; 
+  }
+ 
+  .flex-nowrap {
+   flex-wrap: nowrap; 
+  }
+ 
+  .overflow-hidden {
+   overflow-x: hidden; 
+  }
+ 
+  .recipe-card { 
+   transition: opacity 0.3s ease; 
+  }
+ 
+  .recipe-card:hover {
+   opacity: 1; 
+  }
+ 
+  .recipe-carousel:hover .recipe-card:not(:hover) {
+   opacity: 0.5; 
+  }
+
+  .recipe-card { 
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add transition for smooth effect */
+  }
+
+  .recipe-card:hover {
+    transform: scale(1.05); /* Scale up slightly on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Add a subtle shadow */
+    z-index: 1; /* Ensure the card is on top */
+  }
+
+  .hero-card {
+    background-color: #cdddcd; /* Example background color, adjust as needed */
+    padding: 30px 0; 
+    border: none; /* Remove border to match recipe cards */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add transition for smooth effect */
+  }
+
+  .hero-card:hover {
+    transform: scale(1.05); /* Scale up slightly on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Add a subtle shadow */
+    cursor: pointer;
+  }
+
+  .hero-card .card-title {
+    font-size: 2.5rem; /* Adjust font size as needed */
+    margin-bottom: 0; /* Remove default margin */
+  }
+ </style>
+ {% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'recipe_app/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-6">
+      <div class="card border-light shadow-sm"> 
+        <div class="card-body">
+          <p><h2 class="text-muted mb-4" style="text-align: center;">What Ingredients Are You Working With?</h2></p>
+          <p class="text-muted small" style="text-align: center;">(Tell Me Your Secrets)</p>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3 form-group">
+              <div style="text-align: center;">
+                {{ form.ingredients }}
+              </div>
+            </div>
+            <p class="text-muted" style="text-align: center;">(Please start with any Food Allergens first)</p>
+            <p class="text-muted" style="text-align: center;">Example: "I have chicken peas and rice" or "Give me Gluten Free recipes with..."</p>
+            <div style="text-align: center;">
+              <button type="submit" class="btn btn-secondary">Find Recipes</button> 
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-group {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100
+  }
+</style>
+
+{% endblock %}

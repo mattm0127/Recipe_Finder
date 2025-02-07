@@ -1,0 +1,6 @@
+__pycache__/
+rf_env
+.env
+/credentials
+db.sqlite3
+
