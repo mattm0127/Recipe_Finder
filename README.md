@@ -4,7 +4,7 @@
 
 Grub Goose is a web application that helps you discover exciting new meals using the ingredients you already have. Simply enter your ingredients, and Grub Goose will search a vast database of recipes to find the perfect match. 
 
-Currently Hosted @ mattm.pythonanywhere.com
+Currently Hosted @ [https://mattm.pythonanywhere.com]
 **Features:**
 
 * **Ingredient-based search:** Find recipes that utilize your specific ingredients and dietary needs.
